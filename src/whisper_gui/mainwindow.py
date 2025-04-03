@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import os
-
+from datetime import datetime
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtCore import QSettings, QPoint, QSize, QProcess
 
@@ -133,10 +133,17 @@ class MainWindow(QMainWindow):
         base_name = video_file[:video_file.rfind(".")] 
         audio_file = base_name + ".mp3"
 
+        # if output dir is set use it
+        if self.ui.txtOutputDir.text():
+            audio_file = os.path.join(self.ui.txtOutputDir.text(), os.path.basename(audio_file))
+
         # check if audio file already exists
         while os.path.exists(audio_file):
             audio_file = base_name + "_" + str(i) + ".mp3"
             i += 1
+            # if output dir is set use it
+            if self.ui.txtOutputDir.text():
+                audio_file = os.path.join(self.ui.txtOutputDir.text(), os.path.basename(audio_file))
 
         print(f"Converting {video_file} to {audio_file}")
 
@@ -170,7 +177,17 @@ class MainWindow(QMainWindow):
         if self.ui.txtOutputDir.text():
             args.append("--output_dir")
             args.append(self.ui.txtOutputDir.text())
+
         args.append(audio_file)
+
+        # check if output file already exists
+        output_file = os.path.splitext(audio_file)[0] + ".txt"
+        if self.ui.txtOutputDir.text():
+            output_file = os.path.join(self.ui.txtOutputDir.text(), os.path.basename(output_file))
+            if os.path.exists(output_file):
+                # current timestamp
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                os.rename(output_file, output_file + ".old_" + timestamp)
 
         self.process.start("whisper", args)
 
