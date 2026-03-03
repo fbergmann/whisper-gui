@@ -132,6 +132,16 @@
                <string>small</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>turbo</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>base</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>

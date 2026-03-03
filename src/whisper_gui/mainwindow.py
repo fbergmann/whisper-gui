@@ -72,12 +72,12 @@ class MainWindow(QMainWindow):
                 self,
                 "Open File",
                 "",
-                "Video Files (*.mp4 *.avi *.mkv *.mov);;Audio Files (*.mp3 *.wav *.m4a *.ogg);;All Files (*.*)"
+                "Video Files (*.mp4 *.avi *.mkv *.mov *.opus);;Audio Files (*.mp3 *.wav *.m4a *.ogg *.opus);;All Files (*.*)"
             )
         if file_name:
             if file_name.endswith(".mp4") or file_name.endswith(".avi") or file_name.endswith(".mkv") or file_name.endswith(".mov"):
                 self.ui.txtVideo.setText(file_name)
-            elif file_name.endswith(".mp3") or file_name.endswith(".wav") or file_name.endswith(".m4a") or file_name.endswith(".ogg"):
+            elif file_name.endswith(".opus") or file_name.endswith(".mp3") or file_name.endswith(".wav") or file_name.endswith(".m4a") or file_name.endswith(".ogg"):
                 self.ui.txtAudio.setText(file_name)
         print("Open")
 
@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
             self,
             "Open Audio File",
             self.ui.txtAudio.text(),
-            "Audio Files (*.mp3 *.wav *.m4a *.ogg);;All Files (*.*)"
+            "Audio Files (*.mp3 *.wav *.m4a *.ogg *.opus);;All Files (*.*)"
         )
         if file_name:
             self.ui.txtAudio.setText(file_name)
@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
             self,
             "Open Video File",
             self.ui.txtVideo.text(),
-            "Video Files (*.mp4 *.avi *.mkv *.mov);;All Files (*.*)"
+            "Video Files (*.mp4 *.avi *.mkv *.mov *.opus);;All Files (*.*)"
         )
         if file_name:
             self.ui.txtVideo.setText(file_name)
@@ -132,6 +132,9 @@ class MainWindow(QMainWindow):
         # target file is original file with different extension
         base_name = video_file[:video_file.rfind(".")] 
         audio_file = base_name + ".mp3"
+
+        # replace all spaces with underscores
+        audio_file = audio_file.replace(" ", "_")
 
         # if output dir is set use it
         if self.ui.txtOutputDir.text():
@@ -220,19 +223,27 @@ class MainWindow(QMainWindow):
         self.ui.txtOutput.appendPlainText(output)
 
     def slotConvertAudioFinished(self):
-        print("Convert Audio Finished")
+        self.ui.txtOutput.appendPlainText("Audio conversion finished: " + self.converted_audio_file)
         self.ui.txtAudio.setText(self.converted_audio_file)
         self.ui.cmdConvertAudio.setEnabled(True)
         self.process = None
 
     def slotTranscribeFinished(self):
-        print("Transcribe Finished")
         output = self.process.readAll().data().decode(
             encoding='utf-8',
             errors='replace'
         )
         self.ui.txtOutput.appendPlainText(output)
+        self.ui.txtOutput.appendPlainText("Transcription finished.")
         self.ui.cmdTranscribe.setEnabled(True)
+
+        # read the output file and display in txt tab
+        output_file = os.path.splitext(self.ui.txtAudio.text())[0] + ".txt"
+        if self.ui.txtOutputDir.text():
+            output_file = os.path.join(self.ui.txtOutputDir.text(), os.path.basename(output_file))
+        if os.path.exists(output_file):
+            with open(output_file, "r", encoding="utf-8") as f:
+                self.ui.txtText.setPlainText(f.read())
         self.process = None
 
     def dragEnterEvent(self, event):
