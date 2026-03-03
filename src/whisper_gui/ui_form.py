@@ -127,6 +127,8 @@ class Ui_MainWindow(object):
         self.cmbModel.addItem("")
         self.cmbModel.addItem("")
         self.cmbModel.addItem("")
+        self.cmbModel.addItem("")
+        self.cmbModel.addItem("")
         self.cmbModel.setObjectName(u"cmbModel")
 
         self.horizontalLayout_3.addWidget(self.cmbModel)
@@ -290,6 +292,8 @@ class Ui_MainWindow(object):
         self.cmbModel.setItemText(1, QCoreApplication.translate("MainWindow", u"medium", None))
         self.cmbModel.setItemText(2, QCoreApplication.translate("MainWindow", u"large", None))
         self.cmbModel.setItemText(3, QCoreApplication.translate("MainWindow", u"small", None))
+        self.cmbModel.setItemText(4, QCoreApplication.translate("MainWindow", u"turbo", None))
+        self.cmbModel.setItemText(5, QCoreApplication.translate("MainWindow", u"base", None))
 
         self.cmbLanguage.setItemText(0, QCoreApplication.translate("MainWindow", u"German", None))
         self.cmbLanguage.setItemText(1, QCoreApplication.translate("MainWindow", u"English", None))
