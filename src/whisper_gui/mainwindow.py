@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtCore import QSettings, QPoint, QSize, QProcess
+from PySide6.QtGui import QIcon
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -18,6 +19,11 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.process = None
+
+        # Application icon (next to this module)
+        _icon_path = os.path.join(os.path.dirname(__file__), "whisper_icon.png")
+        if os.path.isfile(_icon_path):
+            self.setWindowIcon(QIcon(_icon_path))
 
         # Enable drag & drop
         self.setAcceptDrops(True)
@@ -273,6 +279,9 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    _icon_path = os.path.join(os.path.dirname(__file__), "whisper_icon.png")
+    if os.path.isfile(_icon_path):
+        app.setWindowIcon(QIcon(_icon_path))
     window = MainWindow()
     window.show()
     if len(sys.argv) > 1:
