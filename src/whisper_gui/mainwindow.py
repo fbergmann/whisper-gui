@@ -146,6 +146,7 @@ class MainWindow(QMainWindow):
         if self.ui.txtOutputDir.text():
             audio_file = os.path.join(self.ui.txtOutputDir.text(), os.path.basename(audio_file))
 
+        i = 0
         # check if audio file already exists
         while os.path.exists(audio_file):
             audio_file = base_name + "_" + str(i) + ".mp3"
