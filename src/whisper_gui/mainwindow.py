@@ -66,11 +66,13 @@ class MainWindow(QMainWindow):
 
     def slotTerminate(self):
         print("Terminate")
-        self.process.terminate()
-        self.process.waitForFinished()
+        if self.process:
+            self.process.terminate()
+            self.process.waitForFinished()
         self.ui.cmdTerminate.setEnabled(False)
         self.ui.cmdTranscribe.setEnabled(True)
         self.ui.cmdConvertAudio.setEnabled(True)
+        self.process = None
 
     def slotOpen(self, file_name=None):
         if not file_name:
@@ -137,10 +139,11 @@ class MainWindow(QMainWindow):
         # create an audio mp3 using ffmpeg
         # target file is original file with different extension
         base_name = video_file[:video_file.rfind(".")] 
-        audio_file = base_name + ".mp3"
-
         # replace all spaces with underscores
-        audio_file = audio_file.replace(" ", "_")
+        base_name = base_name.replace(" ", "_")
+
+        # append mp3 extension
+        audio_file = base_name + ".mp3"
 
         # if output dir is set use it
         if self.ui.txtOutputDir.text():
